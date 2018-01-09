@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Chat Group</title>
+    <link rel="shortcut icon" href="/static/images/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style type="text/css">
+        * {   margin:  0; padding: 0; box-sizing:  border-box;}
+        body { font: 13px Helvetica, Arial ; }
+        form { padding: 3px; position: fixed; bottom: 0; width: 80% ;}
+        form input { border: 2px solid #2525C7 ; border-radius: 8px; padding: 10px; width: 90%; margin-right: .5%; }
+        form input:visited { border: 2px solid #0101DD ; border-radius: 8px; padding: 10px; width: 90%; margin-right: .5%; }
+        #conversation { list-style-type: none; margin-top: 5px; padding: 0; border: 2px border-style gray; overflow: auto;}
+        #conversation li { padding: 5px 10px; width: 100%; }
+        #conversation li:nth-child(odd) { background: #B3AFAF;  width: 100%;     }
+        #conversation:nth-of-type(1n+10) {overflow-y: scroll}
+    </style>
+</head>
+<body>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-8" id="messages" >
+                       <div id="box" style="height:550px; overflow-y: auto;">
+                            <ul id="conversation">
+                                    
+                            </ul>
+                       </div>
+                </div>
+                <div class="col-sm-4">
+                        <a href="#" class="list-group-item active">List Users</a>
+                        <div class="list-group" style="margin-top : 5px;" id="list_user">
+                        </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+                <form>
+                        <div class="form-group">
+                        <input type="text" name="message" id="message" /> 
+                        <button id="btn_send" type="button" class="btn btn-success" style="border-radius : 8px;" >Send</button>
+                    </div>
+                    </form>
+        </div>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+        <script type="text/javascript">
+            var base_url = location.protocol + "//" + document.domain + ":" + location.port
+            var socket = io.connect(base_url)
+            socket.on("connect", function(){
+                console.log("User is connecting")
+                //Ask name
+                var username = prompt("What is your name ?")
+                 if (username === ""){
+                     location.reload()
+                 } else if (username){
+                    socket.emit("adduser", username)
+                    socket.on("update_user", function(usernames){
+                    $("#list_user").empty()
+                    for(var i =0; i< usernames.length; i++)
+                    {
+                            if (usernames[i] != null)
+                            {
+                                $("#list_user").append(' <a href="#" class="list-group-item">'+usernames[i]+'</a>')
+                            }
+                        }
+                    }) 
+                 } else {
+                     location.reload()
+                 }
+                                            
+            })
+            socket.on("update_user", function(usernames){
+                $("#list_user").empty()
+                for(var i =0; i< usernames.length; i++)
+                {
+                    if (usernames[i] != null)
+                    {
+                        $("#list_user").append(' <a href="#" class="list-group-item">'+usernames[i]+'</a>')
+                    }
+                    
+                }
+            })
+            socket.on("update_message", function(data){
+                    $("#conversation").append("<li> <strong>"+data.sender+" : </strong> "+data.message+"</li>")
+                    $("#box").animate({scrollTop : $("#box").height()}, 1000)
+                 });
+
+            $("#btn_send").click(function(e){
+                var message = $("#message").val()
+                $("#message").val("")
+                if(message.trim().length != 0){
+                    socket.emit("send_message", message)
+                }
+            })
+            $("form").submit(function(){
+                return false 
+            })
+            $("#message").keyup(function(event) {
+                if (event.keyCode === 13) {
+                    $("#btn_send").click();
+                }
+            });
+            
+            </script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<link rel="shortcut icon" href="/static/images/favicon.ico" type="image/x-icon">
+<!-- Bootstrap core CSS -->
+<link href="/static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Custom fonts for this template -->
+<link href="/static/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+<link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800'
+    rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
+<!-- Custom styles for this template -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>    
+<link href="/static/css/clean-blog.min.css" rel="stylesheet">
+<style>
+    #floater {
+    background-image: url(https://static.xx.fbcdn.net/rsrc.php/v3/yi/r/wiOtxI3emiC.png) ;
+    background-repeat: no-repeat;
+    background-size: 60px 60px;
+    border-radius: 50px;
+    text-align: center;
+    padding-top: 10px;
+    position: absolute;
+    top: 100px;
+    right: 1px;
+    width: 60px;
+    height: 60px;
+    -webkit-transition: all 2s ease-in-out;
+    transition: all 2s ease-in-out;
+    z-index: 1;
+}
+</style>
+<script>
+        $(window).scroll(function() {
+            var winScrollTop = $(window).scrollTop();
+            var winHeight = $(window).height();
+            var floaterHeight = $('#floater').outerHeight(true);
+            //true so the function takes margins into account
+            var fromBottom = 20;
+
+            var top = winScrollTop + winHeight - floaterHeight - fromBottom-150;
+            $('#floater').css({'top': top + 'px'});
+        });
+</script>

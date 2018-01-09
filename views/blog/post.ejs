@@ -1,0 +1,139 @@
+  <!DOCTYPE html>
+  <html lang="en">
+
+    <head>
+
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+      <meta name="description" content="">
+      <meta name="author" content="">
+
+      <title><%if(data && data.post){%> <%= data.post.title%> <%}%></title>
+
+      <%- include layout/head%>
+      <link rel="stylesheet" href="/static/css/comment.css">
+      <style>
+       a :hover{
+         text-decoration : none;
+        }
+        p a{
+          text-decoration: none;
+          color:#6868F0;
+        }
+      </style>
+    </head>
+
+    <body>
+
+      <!-- Navigation -->
+      <%- include layout/nav %>
+
+      <!-- Page Header -->
+      <header class="masthead" style="background-image: url('/static/images/home-bg.jpg')">
+        <div class="overlay"></div>
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-8 col-md-10 mx-auto">
+              <div class="post-heading">
+                <h1><%if(data && data.post){%> <%= data.post.title%> <%}%></h1>
+                <span class="meta">Posted by
+                  <a href="#"><%if(data && data.post){%> <%= data.post.author%> <%}%></a>
+                  on <%if(data && data.post){%> <%= data.post.created_at%> <%}%></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Post Content -->
+      <article>
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-8 col-md-12 mx-auto">
+                <img src="/static/images/<%= data.post.image%>" class="img-responsive" alt="Cinque Terre" width="698" height="400" style="border-radius : 8px; align:center">
+              <%if(data && data.post){%> <%- data.post.content%> <%}%>
+            </div>
+          </div>
+        </div>
+      </article>
+      <div class="row" style="margin-top : -50px;">
+          <div class="col-lg-8 col-md-12 mx-auto" >
+              <% if(data && data.comments.length > 0){ %>
+                <h5>Danh sách bình luận</h3>
+                <% for(var i = 0; i< data.comments.length; i++){ %>
+              <div class="panel panel-white post panel-shadow">
+                  <div class="post-heading">
+                      <div class="pull-left image">
+                          <img src="http://bootdey.com/img/Content/user_1.jpg" class="img-circle avatar" alt="user profile image">
+                      </div>
+                      <div class="pull-left meta">
+                          <div class="title h5">
+                              <a href="#"><b><%= data.comments[i].name%></b></a>
+                              made a post.
+                          </div>
+                          <h6 class="text-muted time"><%=
+                            (Date.now() - data.comments[i].created_at) / 36000 > 60 ?  parseInt((Date.now() - data.comments[i].created_at) / 36000 -60) :  parseInt((Date.now() - data.comments[i].created_at) / 36000 )%> minute ago</h6>
+                      </div>
+                  </div> 
+                  <div class="post-description"> 
+                      <p><%= data.comments[i].content%></p>
+                  </div>
+              </div>
+              <%}%>
+              <%} else {%>
+                <h5 style="margin-left : 15px;">Chưa có bình luận nào ...</h3>
+              <%}%>
+          </div>
+        </div>
+      </div>
+          <br>
+          <hr>
+          <div class="row">
+              <div class="col-lg-8 col-md-12 mx-auto">
+                  <form method="POST" action="/blog/comment" style="margin-left:15px; margin-top:20px;">
+                    <p id="note"><i class="material-icons" style="color:red" ></i></p>
+                    <input type="hidden" name="idPost" value="<%= data.post._id%>" >
+                    <div class="form-group">
+                      <label for="usr">Name:</label>
+                      <input type="text" class="form-control" id="usr" name="name">
+                    </div>
+                    <div class="form-group">
+                      <label for="comment">Comment:</label>
+                      <textarea class="form-control" rows="5" id="comment" name="comment"></textarea>
+                    </div>
+                    <input type="submit" onsubmit="return validate()" value="Comment" class="btn btn-primary">
+                  </form>
+              </div>
+            </div>
+          </div>
+          </div>
+       
+      
+      <!-- Footer -->
+      <%- include layout/footer %>
+
+      <!-- Bootstrap core JavaScript -->
+      <script src="/static/vendor/jquery/jquery.min.js"></script>
+      <script src="/static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+      <!-- Custom scripts for this template -->
+      <script src="/static/js/clean-blog.min.js"></script>
+      <script>
+          var re = 0;
+          var x = $('.text-muted time').val()
+          var t = parseInt(x)
+          console.log(t)
+          if (t>=1440 ){
+            re = t / 1440
+            $('.text-muted time').html(re + " days ago")
+          } else if (t>=60){
+            re = t/60
+            $('.text-muted time').html(re + " hours ago")
+          } else {
+            re = t 
+            $('.text-muted time').html(re + " minutess ago")
+          }
+          </script> 
+    </body>
+
+  </html>
